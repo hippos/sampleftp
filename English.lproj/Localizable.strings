@@ -1,0 +1,15 @@
+/* 
+   Localizable.strings
+   sampleftp
+
+   Created by hippos on 10/03/24.
+   Copyright 2010 hippos-lab.com. All rights reserved.
+ */
+"drag and drop upload file" = "drag and drop upload file";
+"ready..." = "ready...";
+"connected" = "connected";
+"upload file read error" = "upload file read error";
+"Network write error" = "Network write error";
+"Stream event error" = "Stream event error";
+"completed" = "completed";
+"upload file_name" = "upload %@ ";
