@@ -13,8 +13,8 @@
 @synthesize window;
 @synthesize indicator;
 @synthesize statusLabel,displayLabel;
-@synthesize _remoteOutputStream = remoteOutputStream;
-@synthesize _uploadLocalFilteStream = uploadLocalFilteStream;
+@synthesize remoteOutputStream;
+@synthesize uploadLocalFilteStream;
 
 + (sampleftpAppDelegate *)sharedAppDelegate
 {
@@ -50,6 +50,16 @@
   return;
 }
 
+- (void) putfiles:(NSArray*)filenames
+{
+  if (_putfiles != nil)
+  {
+    [_putfiles release];
+  }
+  _putfiles = [NSMutableArray arrayWithArray:filenames];
+  [self putfile:[_putfiles objectAtIndex:0]];
+}
+
 - (void) putfile:(NSString*)filename
 {
   CFWriteStreamRef ftpStream;
@@ -67,6 +77,7 @@
   [displayLabel setStringValue:[NSString stringWithFormat:NSLocalizedString(@"upload file_name", @"upload file_name"), [filename lastPathComponent]]];
 
   uploadLocalFilteStream = [NSInputStream inputStreamWithFileAtPath:filename];
+  [uploadLocalFilteStream retain];
   assert(uploadLocalFilteStream != nil);
   [uploadLocalFilteStream open];
 
@@ -74,6 +85,7 @@
   assert(ftpStream != NULL);
 
   remoteOutputStream = (NSOutputStream *)ftpStream;
+  [remoteOutputStream retain];
   [remoteOutputStream setProperty:@"username" forKey:(id)kCFStreamPropertyFTPUserName];
   [remoteOutputStream setProperty:@"password" forKey:(id)kCFStreamPropertyFTPPassword];
   [remoteOutputStream setDelegate:self];
@@ -150,12 +162,14 @@
     [remoteOutputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [remoteOutputStream setDelegate:nil];
     [remoteOutputStream close];
+    [remoteOutputStream release];
     remoteOutputStream = nil;
   }
 
   if (uploadLocalFilteStream != nil)
   {
     [uploadLocalFilteStream close];
+    [uploadLocalFilteStream release];
     uploadLocalFilteStream = nil;
   }
   if (msg == nil)
@@ -165,6 +179,16 @@
   else
   {
     [statusLabel setStringValue:msg];
+  }
+  
+  if ((_putfiles != nil) && ([_putfiles count] > 0))
+  {
+    [_putfiles removeObjectAtIndex:0];
+    if ([_putfiles count] > 0)
+    {
+      [self putfile:[_putfiles objectAtIndex:0]];
+      return;
+    }
   }
   [indicator stopAnimation:self];
   [indicator setHidden:YES];
