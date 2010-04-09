@@ -1,6 +1,7 @@
 /* Localized versions of Info.plist keys */
 NSHumanReadableCopyright = "© hippos-lab.com, 2010";
-CFBundleName = "sampleFTP";
+CFBundleName = "サンプルFTP";
 CFBundleShortVersionString = "0.0.1";
-CFBundleGetInfoString = "sampleFTP version 1.2.1, Copyright © 2010 hippos.";
+CFBundleGetInfoString = "sampleFTP version 0.0.1, Copyright © 2010 hippos.";
 NSHumanReadableCopyright = "Copyright © 2010 hippos.";
+
